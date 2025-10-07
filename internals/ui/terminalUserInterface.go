@@ -1,9 +1,11 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/bubbles/list"
-	"github.com/charmbracelet/lipgloss"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
@@ -11,6 +13,7 @@ type model struct {
 	styles    uiStyles
 	mainMenu  chatStyles
 	focus			bool
+	textInput string
 }
 
 type uiStyles struct {
@@ -24,7 +27,8 @@ type uiStyles struct {
 
 type chatStyles struct {
 	box      lipgloss.Style
-	body   	 lipgloss.Style
+	body   	 list.Model
+	chat		 string
 	input    lipgloss.Style
 	color    string
 }
@@ -49,10 +53,33 @@ func initialLeftBar() uiStyles {
 	}
 }
 
-func initialMainBar()  chatStyles { 
+func initialMainBar()  chatStyles {
+	items := []list.Item{
+		menuItem{id:"1", title:"Voce: olha, tudo bem?"},
+		menuItem{id:"2", title:"Pessoa1: Nao hahahaha"},
+		menuItem{id:"3", title:"Pessoa2: puts, que engraçado"},
+		menuItem{id:"4", title:"Voce: olha, tudo bem?"},
+		menuItem{id:"5", title:"Pessoa1: Nao hahahaha"},
+		menuItem{id:"6", title:"Pessoa2: vai dormi"},
+		menuItem{id:"7", title:"Voce: olha, tudo bem?"},
+		menuItem{id:"8", title:"Pessoa1: Nao hahahaha"},
+		menuItem{id:"9", title:"Pessoa2: dormiu????"},
+	}
+
+	delegate := list.NewDefaultDelegate()
+	delegate.SetSpacing(0)
+	delegate.ShowDescription = false
+
+	list := list.New(items, delegate, 75, 10)
+	list.SetShowStatusBar(false)
+	list.SetFilteringEnabled(false)
+	list.SetShowHelp(false)
+	list.SetShowPagination(false)
+
+
 	return chatStyles{
 		box:	   	lipgloss.NewStyle().Border(lipgloss.NormalBorder()).Width(75).Height(9),
-		body:   	lipgloss.NewStyle().Border(lipgloss.HiddenBorder()).Width(75).Height(8),
+		body:   	list,
 		input:    lipgloss.NewStyle().
 								Border(lipgloss.NormalBorder(), false, false, true, false).
 								Width(73).
@@ -103,11 +130,17 @@ func (m model) View() string {
 }
 
 func renderMain(m model) string {
-	body := m.mainMenu.body.Render("Chat — Geral") // depois eu coloco o nome do grupo
+	m.mainMenu.body.Title = "Chat — Geral" // depois eu coloco o nome do grupo
+	body := m.mainMenu.body.View()
+
+	toPrint := m.textInput
+	if len(m.textInput) == 0 {
+		toPrint = "Escreva uma mensagem..."
+	}
 
 	input := m.mainMenu.input.
 						BorderForeground(lipgloss.Color("10")).
-						Render("> Escreva uma mensagem...")
+						Render(fmt.Sprintf("> %s", toPrint))
 
 	rightInner := lipgloss.JoinVertical(lipgloss.Top, body, input)
 
@@ -150,7 +183,22 @@ func rightMenuUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch msg.String() {
 			case "tab":
 				return swapFocus(m)
+			case "enter":
+				// enviar mensagem
+				return m, nil
+			case "backspace":
+				if len(m.textInput) > 0 {
+					m.textInput = m.textInput[:len(m.textInput)-1]
+				}
+				return m, nil
+			case "up", "down", "right", "left", "pgup", "pgdown":
+				var cmd tea.Cmd
+				m.mainMenu.body, cmd = m.mainMenu.body.Update(msg)
+				return m, cmd
 			default:
+				if (msg.String() != " " || len(m.textInput) > 0) {
+					m.textInput += msg.String()
+				}
 				return m, nil
 			}
 		default:
