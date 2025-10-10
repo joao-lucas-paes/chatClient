@@ -6,6 +6,8 @@ import (
 	"fmt"
 )
 
+func init() {}
+
 func main() {
 	app := tea.NewProgram(ui.InitialModel(), tea.WithAltScreen())
 	if _, err := app.Run(); err != nil {
