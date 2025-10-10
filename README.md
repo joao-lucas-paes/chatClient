@@ -18,7 +18,7 @@ It allows you to:
 
 Example:
 <img width="1033" height="306" alt="image" src="https://github.com/user-attachments/assets/6db4750d-0c29-48ca-a45e-f82ea2888e6f" />
-  - This sofware was done using golang and linux (Ubuntu 24.04lts), another OS should work fine, since them has golang, but I don't take any responsability and any warranty of this project works, THIS IS NOT AN PRODUCT, ONLY AN STUDY MATERIAL.
+  - READ THE DISCLAIMER. READ THE DISCLAIMER. READ THE DISCLAIMER. READ THE DISCLAIMER.
 
 ## How to install?
 
