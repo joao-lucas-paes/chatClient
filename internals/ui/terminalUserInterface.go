@@ -34,6 +34,7 @@ type model struct {
 	msgsShow  []*[]api.Msg
 	syncMutex []*sync.Mutex
 	sendMsg   func(msg api.Msg, m model) model
+	P 				*tea.Program
 }
 
 type loginSystem struct {
@@ -134,7 +135,7 @@ func newList(items []list.Item, delegate list.DefaultDelegate) list.Model {
 	return l
 }
 
-func InitialModel() model {
+func InitialModel() *model {
 	items := []list.Item{}
 	delegate := list.NewDefaultDelegate()
 	delegate.SetSpacing(0)
@@ -160,7 +161,7 @@ func InitialModel() model {
 		idxChat: 0,
 		idxMsgs: 0,
 	}
-	return m
+	return &m
 }
 
 func (m model) Init() tea.Cmd {
@@ -299,7 +300,7 @@ func rightMenuUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.msgsShow = append(m.msgsShow, &[]api.Msg{})
 		m.sendMsg = sendMsgToServerSystem
 		m = syncLists(m)
-		go api.RoutineReadMsg(&m.channels[m.idxChat], m.msgsShow[m.idxChat], m.syncMutex[m.idxChat])
+		go api.RoutineReadMsg(&m.channels[m.idxChat], m.msgsShow[m.idxChat], m.syncMutex[m.idxChat], m.P)
 		go api.RoutineSendMsg(&m.channels[m.idxChat], m.msgs[m.idxChat])
 		return m, nil
 	}

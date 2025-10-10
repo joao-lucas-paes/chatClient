@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"os"
 	"strings"
 	"sync"
 	"time"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type Msg struct {
@@ -20,6 +21,8 @@ type Channel struct {
 	Connection 	net.Conn
 	Reader      *bufio.Reader
 }
+
+type ForceReload struct {}
 
 func ConnectTo(addr string, portServer string) (Channel, bool) {
 	addr = addr + ":"
@@ -87,7 +90,7 @@ func RoutineSendMsg(chn *Channel, msgs chan Msg) {
 	}
 }
 
-func RoutineReadMsg(chn *Channel, responseMsgs *[]Msg, m *sync.Mutex) {
+func RoutineReadMsg(chn *Channel, responseMsgs *[]Msg, m *sync.Mutex, p *tea.Program) {
 	for {
 		body, err := chn.Reader.ReadString(byte('\n'))
 		body = body[:len(body)-1] // remove a quebra de linha
@@ -97,5 +100,6 @@ func RoutineReadMsg(chn *Channel, responseMsgs *[]Msg, m *sync.Mutex) {
 		m.Lock()
 		*responseMsgs = append(*responseMsgs, Msg{Text: body, Status: true})
 		m.Unlock()
+		p.Send(ForceReload{})
 	}
 }

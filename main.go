@@ -9,7 +9,10 @@ import (
 func init() {}
 
 func main() {
-	app := tea.NewProgram(ui.InitialModel(), tea.WithAltScreen())
+	model 		:= ui.InitialModel()
+	app 			:= tea.NewProgram(model, tea.WithAltScreen())
+	model.P 	 = app
+
 	if _, err := app.Run(); err != nil {
 		fmt.Printf("Erro: %v\n", err)
 	}
