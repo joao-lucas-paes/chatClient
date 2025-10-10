@@ -22,7 +22,7 @@ Example:
 
 ## How to install?
 
-Required **Go** installed (tested on Ubuntu 24.04 LTS, should work on other systems as well).
+Required **Go** installed (tested on Ubuntu 24.04 LTS, should work on other systems as well) and the server-side (https://github.com/joao-lucas-paes/micro-chatserver-cli).
 
   ```bash
   git clone https://github.com/joao-lucas-paes/chatClient.git
