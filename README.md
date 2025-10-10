@@ -1,4 +1,4 @@
-#Chat Client!
+# Chat Client!
   - This client is the final part of an homework from UFMS, I have used this opportunity to learn golang. Feel free to clone and use this repo if this code helps you, otherwise, if you are one of my classmates, I don't allow you to copy or even use any inspirations of this project, if that happens I will take legal actions against you to protect me and my rights.
   - By the way, this project is an simple project where you can swap between two screens using tab, in left menu, you can navegate between the groups, create or enter in another group using the key "a". To type a msg, you can use any character, including non-ascii like emojis:
 <img width="1033" height="306" alt="image" src="https://github.com/user-attachments/assets/6db4750d-0c29-48ca-a45e-f82ea2888e6f" />
