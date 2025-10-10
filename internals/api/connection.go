@@ -49,15 +49,7 @@ func ConnectTo(addr string, portServer string) (Channel, bool) {
 
 	return Channel{ChannelName: "<login/>", Connection: connChannel}, true
 }
-func debbugRapido(msg string) {
-	f, err := os.OpenFile("log.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
 
-	fmt.Fprintf(f, "Entrou em: %s\n", msg)
-}
 
 func Login(user string, channelName string, chn *Channel) bool {
 	chn.ChannelName = channelName
@@ -84,13 +76,7 @@ func Login(user string, channelName string, chn *Channel) bool {
 
 func sendMsg(chn *Channel, msg string) bool {
 	_, err := chn.Connection.Write([]byte(msg))
-	if err != nil {
-		return false
-	}
-
-	response, _ := chn.Reader.ReadString(byte('\n'))
-
-	return response == "<ok>Message sent</ok>"
+	return err == nil	
 }
 
 func RoutineSendMsg(chn *Channel, msgs chan Msg) {

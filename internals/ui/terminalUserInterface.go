@@ -31,7 +31,7 @@ type model struct {
 	idxChat   int
 	idxMsgs		int
 	msgs      []chan api.Msg
-	msgsShow  [][]api.Msg
+	msgsShow  []*[]api.Msg
 	syncMutex []*sync.Mutex
 	sendMsg   func(msg api.Msg, m model) model
 }
@@ -80,7 +80,7 @@ func sendMsgToServerSystem(msg api.Msg, m model) model {
 		case m.msgs[m.idxChat] <- msg:
 			msg.Text = "vc:"+msg.Text
 			m.syncMutex[m.idxChat].Lock()
-			m.msgsShow[m.idxChat] = append(m.msgsShow[m.idxChat], msg)
+			*m.msgsShow[m.idxChat] = append(*m.msgsShow[m.idxChat], msg)
 			m.syncMutex[m.idxChat].Unlock()
 		default:
 		}
@@ -196,10 +196,10 @@ func syncLists(m model) model {
 	} else {
 		menu := []list.Item{}
 		m.syncMutex[m.idxChat].Lock()
-		for idx := len(m.msgsShow[m.idxChat]) - 1; idx >= 0; idx-- {
+		for idx := len(*m.msgsShow[m.idxChat]) - 1; idx >= 0; idx-- {
 			menu = append(menu, menuItem{
 				id:    strconv.Itoa(idx),
-				title: m.msgsShow[m.idxChat][idx].Text,
+				title: (*m.msgsShow[m.idxChat])[idx].Text,
 			})
 		}
 		m.mainMenu.body.SetItems(menu)
@@ -296,10 +296,10 @@ func rightMenuUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.lg.idxLoggin = 0
 		m.msgs = append(m.msgs, make(chan api.Msg, 8))
 		m.syncMutex = append(m.syncMutex, &sync.Mutex{})
-		m.msgsShow = append(m.msgsShow, make([]api.Msg, 0))
+		m.msgsShow = append(m.msgsShow, &[]api.Msg{})
 		m.sendMsg = sendMsgToServerSystem
 		m = syncLists(m)
-		go api.RoutineReadMsg(&m.channels[m.idxChat], &m.msgsShow[m.idxChat], m.syncMutex[m.idxChat])
+		go api.RoutineReadMsg(&m.channels[m.idxChat], m.msgsShow[m.idxChat], m.syncMutex[m.idxChat])
 		go api.RoutineSendMsg(&m.channels[m.idxChat], m.msgs[m.idxChat])
 		return m, nil
 	}
