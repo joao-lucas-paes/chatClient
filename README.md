@@ -29,7 +29,7 @@ Required **Go** installed (tested on Ubuntu 24.04 LTS, should work on other syst
   cd chatClient
   go build
   ```
-  - And done, now you should have an binare called "chatClient", if you are usign Ubuntu, to run you just need type "./chatClient" and done!
+  - And done, now you should have an binary called "chatClient", if you are usign Ubuntu, to run you just need type "./chatClient" and done!
 ## Lets try?
 ![talktotalk](https://github.com/user-attachments/assets/4347cc58-689f-4776-9f5b-7ea4d8b5cf77)
 
