@@ -72,6 +72,9 @@ func sendMsgToLoginSystem(msg api.Msg, m model) model {
 	m.lg.chat[m.lg.idxLoggin] = msg.Text
 	m.lg.idxLoggin++
 	m.textInput = ""
+	if (m.lg.isLoggin && m.lg.idxLoggin == 4) {
+		m.textInput = "CLIQUE ENTER PARA PROSSEGUIR"
+	}
 	return m
 }
 
@@ -109,7 +112,7 @@ func initialMainBar() chatStyles {
 	list := newList(items, delegate)
 
 	return chatStyles{
-		box:   lipgloss.NewStyle().Border(lipgloss.NormalBorder()).Width(100).Height(9),
+		box:   lipgloss.NewStyle().Border(lipgloss.NormalBorder()).Width(100).Height(8),
 		body:  list,
 		input: lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder(), false, false, true, false).
@@ -192,7 +195,7 @@ func syncLists(m model) model {
 			menuItem{id: "8", title: "Voce:" + m.lg.chat[3]},
 		}
 
-		end := min((m.lg.idxLoggin+1)*2-1, 7)
+		end := min((m.lg.idxLoggin+1)*2-1, 8)
 		m.mainMenu.body.SetItems(menu[:end])
 	} else {
 		menu := []list.Item{}
